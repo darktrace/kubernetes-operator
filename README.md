@@ -1,32 +1,57 @@
 # Darktrace Kubernetes Operator
 
-The Darktrace Kubernetes Operator lets you:
+The Darktrace Kubernetes Operator provides comprehensive security monitoring and threat detection for Kubernetes environments through automated deployment and management of Darktrace sensors.
 
-- Identify malicious Kubernetes API events (thanks to auditSensor).
-- Identify malicious Kubernetes network traffic (thanks to vSensor).
-- Manage your environment in taxonomy in-line with Kubernetes' API (thanks to containerSensor).
-- Monitor the health of your Darktrace Kubernetes deployment.
-- Easily manage updates to your Darktrace deployment.
+## Key Features
 
-## Setting up the Kubernetes Operator
+- **API Security Monitoring**: Detect malicious Kubernetes API events using AuditSensor
+- **Network Traffic Analysis**: Identify suspicious network activity with VSensor
+- **Container Security**: Manage environment taxonomy aligned with Kubernetes API through ContainerSensor
+- **Health Monitoring**: Track deployment status and sensor health
+- **Automated Updates**: Streamlined management of Darktrace component updates
+
+## Installation
 
 ### Prerequisites
 
-Darktrace Kubernetes Operator must be configured with valid Darktrace Active AI Security Portal client credentials. The operator uses these credentials to authenticate requests to /CLOUD and /NETWORK to automate deployment and provide core functionality.
+- Kubernetes cluster with admin privileges
+- Valid Darktrace Active AI Security Portal client credentials
+- Network connectivity to Darktrace cloud services
 
-### Installation
+The operator requires authenticated access to Darktrace's /CLOUD and /NETWORK endpoints for automated deployment and core functionality.
 
-The operator installation creates a dedicated namespace, an operator `Deployment` in that namespace, read only RBAC for the operator, and [Custom Resource Definitions (CRDs)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) of types: `KSensor`, `VSensor`, `AuditSensor`, `ContainerSensor`.
+### Deployment
 
-You can install the Darktrace Kubernetes Operator by:
+The installation process creates:
+- Dedicated operator namespace
+- Operator deployment with appropriate RBAC permissions
+- [Custom Resource Definitions (CRDs)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) for `KSensor`, `VSensor`, `AuditSensor`, and `ContainerSensor`
 
-1. Downloading the `darktrace-operator.yaml` manifest file.
-2. `$ NAMESPACE=<namespace to deploy resources to> IMAGE=darktace-operator:latest envsubst < darktrace-operator.yaml | kubectl apply -f -`
+**Installation Steps:**
 
-### Validation
+1. Download the latest `darktrace-operator.yaml` from the [releases page](releases)
+2. Deploy the operator:
+   ```bash
+   NAMESPACE=<target-namespace> IMAGE=darktrace-operator:latest envsubst < darktrace-operator.yaml | kubectl apply -f -
+   ```
 
-Verify that the Darktrace operator deployment exists in the configured namespace and is healthy. Check that all the CRDs exist.
+### Verification
 
-## Deploy a `KSensor` and Start Protecting your Kubernetes Cluster
+Confirm successful installation:
 
-To start protecting your Kubernetes Cluster, begin the setup process in the /CLOUD management console.
+```bash
+# Verify operator deployment
+kubectl get deployment darktrace-operator -n <namespace>
+
+# Check CRD installation
+kubectl get crd | grep darktrace
+
+# Validate operator logs
+kubectl logs -l app=darktrace-operator -n <namespace>
+```
+
+## Configuration
+
+After successful operator installation, configure and deploy sensors through the Darktrace /CLOUD management console to begin protecting your Kubernetes environment.
+
+For detailed configuration instructions, refer to the Darktrace Customer Portal.
