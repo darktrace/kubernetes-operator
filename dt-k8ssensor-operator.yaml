@@ -1,0 +1,1055 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
+  name: $NAMESPACE
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.17.3
+  name: dtk8ssensorauditagents.app.darktrace.com
+spec:
+  group: app.darktrace.com
+  names:
+    kind: DtK8sSensorAuditAgent
+    listKind: DtK8sSensorAuditAgentList
+    plural: dtk8ssensorauditagents
+    singular: dtk8ssensorauditagent
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              activeAiSecurityPortalProxyUrl:
+                type: string
+              clientId:
+                type: string
+              clientSecret:
+                type: string
+              clusterId:
+                type: string
+              disableTls:
+                default: true
+                type: boolean
+              imageTag:
+                default: "0e35386"
+                minLength: 1
+                type: string
+              jwtUrl:
+                type: string
+              proxy:
+                type: string
+              pushToken:
+                type: string
+              serverUrl:
+                type: string
+            required:
+            - activeAiSecurityPortalProxyUrl
+            - clientId
+            - clientSecret
+            - clusterId
+            - disableTls
+            - jwtUrl
+            - proxy
+            - pushToken
+            - serverUrl
+            type: object
+          status:
+            properties:
+              conditions:
+                items:
+                  properties:
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
+                    message:
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.17.3
+  name: dtk8ssensorclusteranalyzers.app.darktrace.com
+spec:
+  group: app.darktrace.com
+  names:
+    kind: DtK8sSensorClusterAnalyzer
+    listKind: DtK8sSensorClusterAnalyzerList
+    plural: dtk8ssensorclusteranalyzers
+    singular: dtk8ssensorclusteranalyzer
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              clusterId:
+                type: string
+              imageTag:
+                default: 0f1f7d3
+                minLength: 1
+                type: string
+              proxy:
+                type: string
+              pushToken:
+                type: string
+              serverHost:
+                type: string
+            required:
+            - clusterId
+            - pushToken
+            - serverHost
+            type: object
+          status:
+            properties:
+              conditions:
+                items:
+                  properties:
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
+                    message:
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              currentVersion:
+                type: string
+              updateVersion:
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.17.3
+  name: dtk8ssensornodeagents.app.darktrace.com
+spec:
+  group: app.darktrace.com
+  names:
+    kind: DtK8sSensorNodeAgent
+    listKind: DtK8sSensorNodeAgentList
+    plural: dtk8ssensornodeagents
+    singular: dtk8ssensornodeagent
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              disableTls:
+                default: true
+                type: boolean
+              imageTag:
+                default: 20e12196
+                minLength: 1
+                type: string
+              serverHost:
+                type: string
+              serviceName:
+                type: string
+              setupKey:
+                type: string
+              setupKeyId:
+                type: string
+            required:
+            - disableTls
+            - serverHost
+            - serviceName
+            - setupKey
+            - setupKeyId
+            type: object
+          status:
+            properties:
+              conditions:
+                items:
+                  properties:
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
+                    message:
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.17.3
+  name: dtk8ssensors.app.darktrace.com
+spec:
+  group: app.darktrace.com
+  names:
+    kind: DtK8sSensor
+    listKind: DtK8sSensorList
+    plural: dtk8ssensors
+    singular: dtk8ssensor
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              auth:
+                properties:
+                  activeAiSecurityPortalUrl:
+                    default: https://activeai.darktrace.com
+                    pattern: ^https:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?(\/.*)?$
+                    type: string
+                  clientId:
+                    pattern: ^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}$
+                    type: string
+                  clientSecret:
+                    minLength: 1
+                    type: string
+                required:
+                - activeAiSecurityPortalUrl
+                - clientId
+                - clientSecret
+                type: object
+              clusterId:
+                type: string
+              components:
+                properties:
+                  auditAgentSpec:
+                    properties:
+                      enabled:
+                        type: boolean
+                    required:
+                    - enabled
+                    type: object
+                  clusterAnalyzerSpec:
+                    properties:
+                      enabled:
+                        type: boolean
+                    required:
+                    - enabled
+                    type: object
+                  nodeAgentSpec:
+                    properties:
+                      enabled:
+                        type: boolean
+                    required:
+                    - enabled
+                    type: object
+                  serverSpec:
+                    properties:
+                      awsAccessKeyId:
+                        type: string
+                      awsEndpoint:
+                        type: string
+                      awsSecretAccessKey:
+                        type: string
+                      azureStorageAccount:
+                        type: string
+                      azureStorageContainer:
+                        type: string
+                      enabled:
+                        default: true
+                        type: boolean
+                      pcapEnabled:
+                        default: false
+                        type: boolean
+                      proxy:
+                        type: string
+                      s3Bucket:
+                        type: string
+                      s3StoragePath:
+                        type: string
+                    required:
+                    - enabled
+                    - pcapEnabled
+                    type: object
+                    x-kubernetes-validations:
+                    - message: Specify either AWS or Azure settings, not both.
+                      rule: '!(((has(self.s3Bucket) && self.s3Bucket != "") || (has(self.awsAccessKeyId)
+                        && self.awsAccessKeyId != "") || (has(self.awsSecretAccessKey)
+                        && self.awsSecretAccessKey != "") || (has(self.awsEndpoint)
+                        && self.awsEndpoint != "") || (has(self.s3StoragePath) &&
+                        self.s3StoragePath != "")) && ((has(self.azureStorageAccount)
+                        && self.azureStorageAccount != "") || (has(self.azureStorageContainer)
+                        && self.azureStorageContainer != "")))'
+                    - message: When using PCAP, s3Bucket is required if using AWS
+                        or azureStorageAccount and azureStorageContainer are required
+                        if using Azure.
+                      rule: '!(self.enabled && self.pcapEnabled && !((has(self.s3Bucket)
+                        && self.s3Bucket != "") || ((has(self.azureStorageAccount)
+                        && self.azureStorageAccount != "") && (has(self.azureStorageContainer)
+                        && self.azureStorageContainer != ""))))'
+                required:
+                - auditAgentSpec
+                - clusterAnalyzerSpec
+                - nodeAgentSpec
+                - serverSpec
+                type: object
+                x-kubernetes-validations:
+                - message: At least one component must be enabled
+                  rule: self.auditAgentSpec.enabled || self.clusterAnalyzerSpec.enabled
+                    || self.nodeAgentSpec.enabled || self.serverSpec.enabled
+              proxy:
+                type: string
+            required:
+            - auth
+            - clusterId
+            - components
+            type: object
+          status:
+            properties:
+              conditions:
+                items:
+                  properties:
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
+                    message:
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.17.3
+  name: dtk8ssensorservers.app.darktrace.com
+spec:
+  group: app.darktrace.com
+  names:
+    kind: DtK8sSensorServer
+    listKind: DtK8sSensorServerList
+    plural: dtk8ssensorservers
+    singular: dtk8ssensorserver
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              awsAccessKeyId:
+                type: string
+              awsEndpoint:
+                type: string
+              awsSecretAccessKey:
+                type: string
+              azureStorageAccount:
+                type: string
+              azureStorageContainer:
+                type: string
+              dpiImageTag:
+                default: latest
+                type: string
+              enabled:
+                default: true
+                type: boolean
+              gatewayId:
+                type: string
+              gatewayToken:
+                type: string
+              hekaImageTag:
+                default: latest
+                type: string
+              hmacOsSensor:
+                type: string
+              l3lbImageTag:
+                default: latest
+                type: string
+              master:
+                type: string
+              nginxImageTag:
+                default: latest
+                type: string
+              pcapEnabled:
+                default: false
+                type: boolean
+              probeId:
+                type: string
+              proxy:
+                type: string
+              pushToken:
+                type: string
+              redisImageTag:
+                default: latest
+                type: string
+              rsTunnelsImageTag:
+                default: latest
+                type: string
+              s3Bucket:
+                type: string
+              s3StoragePath:
+                type: string
+              sabreServerImageTag:
+                default: latest
+                type: string
+              sabreToken:
+                type: string
+              sensorUrl:
+                type: string
+              vanguardImageTag:
+                default: rc-1.1.14
+                type: string
+              verifyCertificate:
+                default: true
+                type: boolean
+            required:
+            - enabled
+            - gatewayId
+            - gatewayToken
+            - hmacOsSensor
+            - master
+            - pcapEnabled
+            - probeId
+            - pushToken
+            - sabreToken
+            - sensorUrl
+            - verifyCertificate
+            type: object
+            x-kubernetes-validations:
+            - message: When enabled, pushToken must be '<probeGroup>:<rest>', e.g.
+                'pg-01:abc123'
+              rule: '!self.enabled || (size(self.pushToken) > 0 && self.pushToken.matches(''^.+:.+$''))'
+            - message: Specify either AWS or Azure settings, not both.
+              rule: '!(((has(self.s3Bucket) && self.s3Bucket != "") || (has(self.awsAccessKeyId)
+                && self.awsAccessKeyId != "") || (has(self.awsSecretAccessKey) &&
+                self.awsSecretAccessKey != "") || (has(self.awsEndpoint) && self.awsEndpoint
+                != "") || (has(self.s3StoragePath) && self.s3StoragePath != "")) &&
+                ((has(self.azureStorageAccount) && self.azureStorageAccount != "")
+                || (has(self.azureStorageContainer) && self.azureStorageContainer
+                != "")))'
+            - message: When using PCAP, s3Bucket is required if using AWS or azureStorageAccount
+                and azureStorageContainer are required if using Azure.
+              rule: '!(self.enabled && self.pcapEnabled && !((has(self.s3Bucket) &&
+                self.s3Bucket != "") || ((has(self.azureStorageAccount) && self.azureStorageAccount
+                != "") && (has(self.azureStorageContainer) && self.azureStorageContainer
+                != ""))))'
+          status:
+            properties:
+              conditions:
+                items:
+                  properties:
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
+                    message:
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+  name: dt-k8ssensor-controller-manager
+  namespace: $NAMESPACE
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+  name: dt-k8ssensor-ro-permission
+  namespace: $NAMESPACE
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: dt-k8ssensor-intercomponent-communication
+  namespace: $NAMESPACE
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+  name: dt-k8ssensor-leader-election-role
+  namespace: $NAMESPACE
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dt-k8ssensor-manager-role
+rules:
+- apiGroups:
+  - ""
+  - admissionregistration.k8s.io
+  - app.darktrace.com
+  - apps
+  resources:
+  - '*'
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - autoscaling
+  resources:
+  - horizontalpodautoscalers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+  name: dt-k8ssensor-metrics-reader
+rules:
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+  name: dt-k8ssensor-proxy-role
+rules:
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dt-k8ssensor-ro-role
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - batch
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - autoscaling
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - autoscaling
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+  name: dt-k8ssensor-comms-rolebinding
+  namespace: $NAMESPACE
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: dt-k8ssensor-intercomponent-communication
+subjects:
+- kind: ServiceAccount
+  name: dt-k8ssensor-ro-permission
+  namespace: $NAMESPACE
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+  name: dt-k8ssensor-leader-election-rolebinding
+  namespace: $NAMESPACE
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: dt-k8ssensor-leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: dt-k8ssensor-controller-manager
+  namespace: $NAMESPACE
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+  name: dt-k8ssensor-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: dt-k8ssensor-manager-role
+subjects:
+- kind: ServiceAccount
+  name: dt-k8ssensor-controller-manager
+  namespace: $NAMESPACE
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+  name: dt-k8ssensor-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: dt-k8ssensor-proxy-role
+subjects:
+- kind: ServiceAccount
+  name: dt-k8ssensor-controller-manager
+  namespace: $NAMESPACE
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+  name: dt-k8ssensor-ro-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: dt-k8ssensor-ro-role
+subjects:
+- kind: ServiceAccount
+  name: dt-k8ssensor-ro-permission
+  namespace: $NAMESPACE
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
+  name: dt-k8ssensor-controller-manager-metrics-service
+  namespace: $NAMESPACE
+spec:
+  ports:
+  - name: https
+    port: 8443
+    protocol: TCP
+    targetPort: https
+  selector:
+    control-plane: controller-manager
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
+  name: dt-k8ssensor-controller-manager
+  namespace: $NAMESPACE
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+      labels:
+        control-plane: controller-manager
+    spec:
+      containers:
+      - args:
+        - --secure-listen-address=0.0.0.0:8443
+        - --upstream=http://127.0.0.1:8080/
+        - --logtostderr=true
+        - --v=0
+        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.16.0
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 5m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+      - args:
+        - --health-probe-bind-address=:8081
+        - --metrics-bind-address=127.0.0.1:8080
+        - --leader-elect
+        command:
+        - /manager
+        env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: $IMAGE
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        name: manager
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: dt-k8ssensor-controller-manager
+      terminationGracePeriodSeconds: 10
