@@ -46,15 +46,28 @@ spec:
                 default: true
                 type: boolean
               imageTag:
-                default: "0e35386"
                 minLength: 1
                 type: string
               jwtUrl:
+                type: string
+              logLevel:
+                default: INFO
+                enum:
+                - DEBUG
+                - INFO
+                - WARN
+                - ERROR
+                - DPANIC
+                - PANIC
+                - FATAL
                 type: string
               proxy:
                 type: string
               pushToken:
                 type: string
+              sendRawEvents:
+                default: false
+                type: boolean
               serverUrl:
                 type: string
             required:
@@ -66,6 +79,7 @@ spec:
             - jwtUrl
             - proxy
             - pushToken
+            - sendRawEvents
             - serverUrl
             type: object
           status:
@@ -143,10 +157,19 @@ spec:
             type: object
           spec:
             properties:
+              activeAiSecurityPortalUrl:
+                default: https://activeai.darktrace.com
+                pattern: ^https:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?(\/.*)?$
+                type: string
+              clientId:
+                type: string
+              clientSecret:
+                type: string
               clusterId:
                 type: string
+              deploymentId:
+                type: integer
               imageTag:
-                default: 0f1f7d3
                 minLength: 1
                 type: string
               proxy:
@@ -156,7 +179,11 @@ spec:
               serverHost:
                 type: string
             required:
+            - activeAiSecurityPortalUrl
+            - clientId
+            - clientSecret
             - clusterId
+            - deploymentId
             - pushToken
             - serverHost
             type: object
@@ -239,25 +266,24 @@ spec:
             type: object
           spec:
             properties:
+              clusterId:
+                type: string
               disableTls:
                 default: true
                 type: boolean
               imageTag:
-                default: 20e12196
                 minLength: 1
                 type: string
               serverHost:
-                type: string
-              serviceName:
                 type: string
               setupKey:
                 type: string
               setupKeyId:
                 type: string
             required:
+            - clusterId
             - disableTls
             - serverHost
-            - serviceName
             - setupKey
             - setupKeyId
             type: object
@@ -353,6 +379,9 @@ spec:
                 - clientId
                 - clientSecret
                 type: object
+              autoUpdate:
+                default: true
+                type: boolean
               clusterId:
                 type: string
               components:
@@ -436,6 +465,7 @@ spec:
                 type: string
             required:
             - auth
+            - autoUpdate
             - clusterId
             - components
             type: object
@@ -524,8 +554,9 @@ spec:
                 type: string
               azureStorageContainer:
                 type: string
+              clusterId:
+                type: string
               dpiImageTag:
-                default: latest
                 type: string
               enabled:
                 default: true
@@ -535,17 +566,14 @@ spec:
               gatewayToken:
                 type: string
               hekaImageTag:
-                default: latest
                 type: string
               hmacOsSensor:
                 type: string
               l3lbImageTag:
-                default: latest
                 type: string
               master:
                 type: string
               nginxImageTag:
-                default: latest
                 type: string
               pcapEnabled:
                 default: false
@@ -557,29 +585,26 @@ spec:
               pushToken:
                 type: string
               redisImageTag:
-                default: latest
                 type: string
               rsTunnelsImageTag:
-                default: latest
                 type: string
               s3Bucket:
                 type: string
               s3StoragePath:
                 type: string
               sabreServerImageTag:
-                default: latest
                 type: string
               sabreToken:
                 type: string
               sensorUrl:
                 type: string
               vanguardImageTag:
-                default: rc-1.1.14
                 type: string
               verifyCertificate:
                 default: true
                 type: boolean
             required:
+            - clusterId
             - enabled
             - gatewayId
             - gatewayToken
