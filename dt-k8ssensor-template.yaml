@@ -1,0 +1,30 @@
+apiVersion: app.darktrace.com/v1alpha1
+kind: DtK8sSensor
+metadata:
+  labels:
+    app.kubernetes.io/name: dt-k8ssensor
+    app.kubernetes.io/managed-by: kustomize
+  name: dt-k8ssensor
+spec:
+  clusterId: $CLUSTER_ID
+  auth:
+    activeAiSecurityPortalUrl: $ACTIVE_AI_SECURITY_PORTAL_URL
+    clientId: $CLIENT_ID
+    clientSecret: $CLIENT_SECRET
+  autoUpdate: $AUTO_UPDATE
+  components:
+    auditAgentSpec:
+      enabled: true
+    clusterAnalyzerSpec:
+      enabled: true
+    nodeAgentSpec:
+      enabled: true
+    serverSpec:
+      enabled: true
+      s3Bucket: $S3_BUCKET
+      pcapEnabled: $PCAP_ENABLED
+      awsAccessKeyId: $AWS_ACCESS_KEY_ID
+      awsEndpoint: $AWS_ENDPOINT
+      s3StoragePath: $S3_STORAGE_PATH
+      azureStorageAccount: $AZURE_STORAGE_ACCOUNT
+      azureStorageContainer: $AZURE_STORAGE_CONTAINER
