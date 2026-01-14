@@ -374,6 +374,18 @@ spec:
                   clientSecret:
                     minLength: 1
                     type: string
+                  products:
+                    additionalProperties:
+                      properties:
+                        name:
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: object
+                    x-kubernetes-validations:
+                    - message: key must be one of /CLOUD, /CLOUD/K8S, /NETWORK
+                      rule: self.all(k, _, (k in ['/CLOUD','/CLOUD/K8S','/NETWORK']))
                 required:
                 - activeAiSecurityPortalUrl
                 - clientId
@@ -1049,6 +1061,7 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         image: $IMAGE
+        imagePullPolicy: Always
         livenessProbe:
           httpGet:
             path: /healthz
