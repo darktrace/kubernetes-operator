@@ -56,3 +56,14 @@ kubectl logs -l app=dt-k8ssensor -n <namespace>
 After successful operator installation, configure and deploy sensors through the Darktrace /CLOUD management console to begin protecting your Kubernetes environment.
 
 For detailed configuration instructions, refer to the Darktrace Customer Portal.
+
+## Uninstalling
+
+Uninstall all Darktrace Kubernetes resources from a cluster:
+
+```bash
+kubectl delete dtk8ssensor --all --wait=true --ignore-not-found
+kubectl delete crd -l app.kubernetes.io/name=dt-k8ssensor
+kubectl delete all --all-namespaces -l app.kubernetes.io/name=dt-k8ssensor
+kubectl delete crd,clusterrole,clusterrolebinding,role,serviceaccount,rolebinding --all-namespaces -l app.kubernetes.io/name=dt-k8ssensor
+```

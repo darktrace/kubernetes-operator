@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
+    app.kubernetes.io/component: operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: dt-k8ssensor
     control-plane: controller-manager
@@ -11,7 +12,12 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.3
+    controller-gen.kubebuilder.io/version: v0.20.1
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dtk8ssensorauditagents.app.darktrace.com
 spec:
   group: app.darktrace.com
@@ -77,7 +83,6 @@ spec:
             - clusterId
             - disableTls
             - jwtUrl
-            - proxy
             - pushToken
             - sendRawEvents
             - serverUrl
@@ -134,7 +139,12 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.3
+    controller-gen.kubebuilder.io/version: v0.20.1
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dtk8ssensorclusteranalyzers.app.darktrace.com
 spec:
   group: app.darktrace.com
@@ -243,7 +253,12 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.3
+    controller-gen.kubebuilder.io/version: v0.20.1
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dtk8ssensornodeagents.app.darktrace.com
 spec:
   group: app.darktrace.com
@@ -339,7 +354,12 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.3
+    controller-gen.kubebuilder.io/version: v0.20.1
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dtk8ssensors.app.darktrace.com
 spec:
   group: app.darktrace.com
@@ -385,7 +405,7 @@ spec:
                     type: object
                     x-kubernetes-validations:
                     - message: key must be one of /CLOUD, /CLOUD/K8S, /NETWORK
-                      rule: self.all(k, _, (k in ['/CLOUD','/CLOUD/K8S','/NETWORK']))
+                      rule: self.all(k, k in ['/CLOUD','/CLOUD/K8S','/NETWORK'])
                 required:
                 - activeAiSecurityPortalUrl
                 - clientId
@@ -533,7 +553,12 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.3
+    controller-gen.kubebuilder.io/version: v0.20.1
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dtk8ssensorservers.app.darktrace.com
 spec:
   group: app.darktrace.com
@@ -569,6 +594,8 @@ spec:
               clusterId:
                 type: string
               dpiImageTag:
+                type: string
+              dpiProxyImageTag:
                 type: string
               enabled:
                 default: true
@@ -699,8 +726,21 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
+    app.kubernetes.io/component: operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
+  name: dt-k8ssensor-cluster-analyzer
+  namespace: $NAMESPACE
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dt-k8ssensor-controller-manager
   namespace: $NAMESPACE
 ---
@@ -708,30 +748,32 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
+    app.kubernetes.io/component: operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
+  name: dt-k8ssensor-get-metrics
+  namespace: $NAMESPACE
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dt-k8ssensor-ro-permission
   namespace: $NAMESPACE
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: dt-k8ssensor-intercomponent-communication
-  namespace: $NAMESPACE
-rules:
-- apiGroups:
-  - ""
-  resources:
-  - events
-  verbs:
-  - create
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
   labels:
+    app.kubernetes.io/component: operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dt-k8ssensor-leader-election-role
   namespace: $NAMESPACE
 rules:
@@ -770,6 +812,11 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dt-k8ssensor-manager-role
 rules:
 - apiGroups:
@@ -804,8 +851,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
+    app.kubernetes.io/component: operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dt-k8ssensor-metrics-reader
 rules:
 - nonResourceURLs:
@@ -817,8 +866,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
+    app.kubernetes.io/component: operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dt-k8ssensor-proxy-role
 rules:
 - apiGroups:
@@ -837,6 +888,11 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dt-k8ssensor-ro-role
 rules:
 - apiGroups:
@@ -905,28 +961,54 @@ rules:
   - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRole
 metadata:
   labels:
+    app.kubernetes.io/component: operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: dt-k8ssensor
-  name: dt-k8ssensor-comms-rolebinding
-  namespace: $NAMESPACE
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: dt-k8ssensor-intercomponent-communication
-subjects:
-- kind: ServiceAccount
-  name: dt-k8ssensor-ro-permission
-  namespace: $NAMESPACE
+    control-plane: controller-manager
+  name: dt-k8ssensor-workload-ro-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - services
+  - replicationcontrollers
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - replicasets
+  - statefulsets
+  - daemonsets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - batch
+  resources:
+  - cronjobs
+  - jobs
+  verbs:
+  - get
+  - list
+  - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
+    app.kubernetes.io/component: operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dt-k8ssensor-leader-election-rolebinding
   namespace: $NAMESPACE
 roleRef:
@@ -942,8 +1024,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
+    app.kubernetes.io/component: operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dt-k8ssensor-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -958,8 +1042,28 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
+    app.kubernetes.io/component: operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
+  name: dt-k8ssensor-metrics-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: dt-k8ssensor-metrics-reader
+subjects:
+- kind: ServiceAccount
+  name: dt-k8ssensor-get-metrics
+  namespace: $NAMESPACE
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dt-k8ssensor-proxy-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -974,8 +1078,28 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
+    app.kubernetes.io/component: operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
+  name: dt-k8ssensor-read-workloads
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: dt-k8ssensor-workload-ro-role
+subjects:
+- kind: ServiceAccount
+  name: dt-k8ssensor-cluster-analyzer
+  namespace: $NAMESPACE
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: dt-k8ssensor
+    control-plane: controller-manager
   name: dt-k8ssensor-ro-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -990,6 +1114,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    app.kubernetes.io/component: operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: dt-k8ssensor
     control-plane: controller-manager
@@ -1008,6 +1133,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/component: operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: dt-k8ssensor
     control-plane: controller-manager
@@ -1050,9 +1176,10 @@ spec:
             drop:
             - ALL
       - args:
+        - --leader-elect
+        - --log-level=$LOG_LEVEL
         - --health-probe-bind-address=:8081
         - --metrics-bind-address=127.0.0.1:8080
-        - --leader-elect
         command:
         - /manager
         env:
