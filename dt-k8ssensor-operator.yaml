@@ -182,6 +182,9 @@ spec:
               imageTag:
                 minLength: 1
                 type: string
+              nodeAgentServerUrl:
+                pattern: ^https:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?(\/.*)?$
+                type: string
               proxy:
                 type: string
               pushToken:
@@ -194,6 +197,7 @@ spec:
             - clientSecret
             - clusterId
             - deploymentId
+            - nodeAgentServerUrl
             - pushToken
             - serverHost
             type: object
@@ -404,8 +408,8 @@ spec:
                       type: object
                     type: object
                     x-kubernetes-validations:
-                    - message: key must be one of /CLOUD, /CLOUD/K8S, /NETWORK
-                      rule: self.all(k, k in ['/CLOUD','/CLOUD/K8S','/NETWORK'])
+                    - message: key must be one of /CLOUD, /CLOUD/K8S, /NETWORK, /ENDPOINT
+                      rule: self.all(k, k in ['/CLOUD','/CLOUD/K8S','/NETWORK','/ENDPOINT'])
                 required:
                 - activeAiSecurityPortalUrl
                 - clientId
@@ -418,27 +422,6 @@ spec:
                 type: string
               components:
                 properties:
-                  auditAgentSpec:
-                    properties:
-                      enabled:
-                        type: boolean
-                    required:
-                    - enabled
-                    type: object
-                  clusterAnalyzerSpec:
-                    properties:
-                      enabled:
-                        type: boolean
-                    required:
-                    - enabled
-                    type: object
-                  nodeAgentSpec:
-                    properties:
-                      enabled:
-                        type: boolean
-                    required:
-                    - enabled
-                    type: object
                   serverSpec:
                     properties:
                       awsAccessKeyId:
@@ -451,9 +434,6 @@ spec:
                         type: string
                       azureStorageContainer:
                         type: string
-                      enabled:
-                        default: true
-                        type: boolean
                       pcapEnabled:
                         default: false
                         type: boolean
@@ -464,7 +444,6 @@ spec:
                       s3StoragePath:
                         type: string
                     required:
-                    - enabled
                     - pcapEnabled
                     type: object
                     x-kubernetes-validations:
@@ -479,27 +458,19 @@ spec:
                     - message: When using PCAP, s3Bucket is required if using AWS
                         or azureStorageAccount and azureStorageContainer are required
                         if using Azure.
-                      rule: '!(self.enabled && self.pcapEnabled && !((has(self.s3Bucket)
-                        && self.s3Bucket != "") || ((has(self.azureStorageAccount)
-                        && self.azureStorageAccount != "") && (has(self.azureStorageContainer)
-                        && self.azureStorageContainer != ""))))'
+                      rule: '!(self.pcapEnabled && !((has(self.s3Bucket) && self.s3Bucket
+                        != "") || ((has(self.azureStorageAccount) && self.azureStorageAccount
+                        != "") && (has(self.azureStorageContainer) && self.azureStorageContainer
+                        != ""))))'
                 required:
-                - auditAgentSpec
-                - clusterAnalyzerSpec
-                - nodeAgentSpec
                 - serverSpec
                 type: object
-                x-kubernetes-validations:
-                - message: At least one component must be enabled
-                  rule: self.auditAgentSpec.enabled || self.clusterAnalyzerSpec.enabled
-                    || self.nodeAgentSpec.enabled || self.serverSpec.enabled
               proxy:
                 type: string
             required:
             - auth
             - autoUpdate
             - clusterId
-            - components
             type: object
           status:
             properties:
@@ -597,9 +568,6 @@ spec:
                 type: string
               dpiProxyImageTag:
                 type: string
-              enabled:
-                default: true
-                type: boolean
               gatewayId:
                 type: string
               gatewayToken:
@@ -636,6 +604,7 @@ spec:
               sabreToken:
                 type: string
               sensorUrl:
+                pattern: ^https:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?(\/.*)?$
                 type: string
               vanguardImageTag:
                 type: string
@@ -644,7 +613,6 @@ spec:
                 type: boolean
             required:
             - clusterId
-            - enabled
             - gatewayId
             - gatewayToken
             - hmacOsSensor
@@ -657,9 +625,8 @@ spec:
             - verifyCertificate
             type: object
             x-kubernetes-validations:
-            - message: When enabled, pushToken must be '<probeGroup>:<rest>', e.g.
-                'pg-01:abc123'
-              rule: '!self.enabled || (size(self.pushToken) > 0 && self.pushToken.matches(''^.+:.+$''))'
+            - message: pushToken must be '<probeGroup>:<rest>', e.g. 'pg-01:abc123'
+              rule: (size(self.pushToken) > 0 && self.pushToken.matches('^.+:.+$'))
             - message: Specify either AWS or Azure settings, not both.
               rule: '!(((has(self.s3Bucket) && self.s3Bucket != "") || (has(self.awsAccessKeyId)
                 && self.awsAccessKeyId != "") || (has(self.awsSecretAccessKey) &&
@@ -670,8 +637,8 @@ spec:
                 != "")))'
             - message: When using PCAP, s3Bucket is required if using AWS or azureStorageAccount
                 and azureStorageContainer are required if using Azure.
-              rule: '!(self.enabled && self.pcapEnabled && !((has(self.s3Bucket) &&
-                self.s3Bucket != "") || ((has(self.azureStorageAccount) && self.azureStorageAccount
+              rule: '!(self.pcapEnabled && !((has(self.s3Bucket) && self.s3Bucket
+                != "") || ((has(self.azureStorageAccount) && self.azureStorageAccount
                 != "") && (has(self.azureStorageContainer) && self.azureStorageContainer
                 != ""))))'
           status:
