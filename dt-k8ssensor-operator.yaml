@@ -462,8 +462,6 @@ spec:
                         != "") || ((has(self.azureStorageAccount) && self.azureStorageAccount
                         != "") && (has(self.azureStorageContainer) && self.azureStorageContainer
                         != ""))))'
-                required:
-                - serverSpec
                 type: object
               proxy:
                 type: string
