@@ -40,21 +40,66 @@ spec:
             type: object
           spec:
             properties:
-              activeAiSecurityPortalProxyUrl:
-                type: string
-              clientId:
-                type: string
-              clientSecret:
-                type: string
-              clusterId:
-                type: string
+              darktraceConfig:
+                properties:
+                  activeAiSecurityPortalUrl:
+                    default: https://activeai.darktrace.com
+                    pattern: ^https:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?(\/.*)?$
+                    type: string
+                  clientId:
+                    pattern: ^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}$
+                    type: string
+                  clientSecretRef:
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        default: ""
+                        type: string
+                      optional:
+                        type: boolean
+                    required:
+                    - key
+                    type: object
+                    x-kubernetes-map-type: atomic
+                  clusterId:
+                    type: string
+                  products:
+                    additionalProperties:
+                      properties:
+                        name:
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: object
+                    x-kubernetes-validations:
+                    - message: key must be one of /CLOUD, /NETWORK
+                      rule: self.all(k, k in ['/CLOUD','/NETWORK'])
+                required:
+                - activeAiSecurityPortalUrl
+                - clientId
+                - clientSecretRef
+                - clusterId
+                type: object
               disableTls:
                 default: true
                 type: boolean
+              hmacTokenRef:
+                properties:
+                  key:
+                    type: string
+                  name:
+                    default: ""
+                    type: string
+                  optional:
+                    type: boolean
+                required:
+                - key
+                type: object
+                x-kubernetes-map-type: atomic
               imageTag:
                 minLength: 1
-                type: string
-              jwtUrl:
                 type: string
               logLevel:
                 default: INFO
@@ -69,23 +114,14 @@ spec:
                 type: string
               proxy:
                 type: string
-              pushToken:
-                type: string
               sendRawEvents:
                 default: false
                 type: boolean
-              serverUrl:
-                type: string
             required:
-            - activeAiSecurityPortalProxyUrl
-            - clientId
-            - clientSecret
-            - clusterId
+            - darktraceConfig
             - disableTls
-            - jwtUrl
-            - pushToken
+            - hmacTokenRef
             - sendRawEvents
-            - serverUrl
             type: object
           status:
             properties:
@@ -167,39 +203,69 @@ spec:
             type: object
           spec:
             properties:
-              activeAiSecurityPortalUrl:
-                default: https://activeai.darktrace.com
-                pattern: ^https:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?(\/.*)?$
-                type: string
-              clientId:
-                type: string
-              clientSecret:
-                type: string
-              clusterId:
-                type: string
-              deploymentId:
-                type: integer
+              darktraceConfig:
+                properties:
+                  activeAiSecurityPortalUrl:
+                    default: https://activeai.darktrace.com
+                    pattern: ^https:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?(\/.*)?$
+                    type: string
+                  clientId:
+                    pattern: ^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}$
+                    type: string
+                  clientSecretRef:
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        default: ""
+                        type: string
+                      optional:
+                        type: boolean
+                    required:
+                    - key
+                    type: object
+                    x-kubernetes-map-type: atomic
+                  clusterId:
+                    type: string
+                  products:
+                    additionalProperties:
+                      properties:
+                        name:
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: object
+                    x-kubernetes-validations:
+                    - message: key must be one of /CLOUD, /NETWORK
+                      rule: self.all(k, k in ['/CLOUD','/NETWORK'])
+                required:
+                - activeAiSecurityPortalUrl
+                - clientId
+                - clientSecretRef
+                - clusterId
+                type: object
+              hmacTokenRef:
+                properties:
+                  key:
+                    type: string
+                  name:
+                    default: ""
+                    type: string
+                  optional:
+                    type: boolean
+                required:
+                - key
+                type: object
+                x-kubernetes-map-type: atomic
               imageTag:
                 minLength: 1
                 type: string
-              nodeAgentServerUrl:
-                pattern: ^https:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?(\/.*)?$
-                type: string
               proxy:
                 type: string
-              pushToken:
-                type: string
-              serverHost:
-                type: string
             required:
-            - activeAiSecurityPortalUrl
-            - clientId
-            - clientSecret
-            - clusterId
-            - deploymentId
-            - nodeAgentServerUrl
-            - pushToken
-            - serverHost
+            - darktraceConfig
+            - hmacTokenRef
             type: object
           status:
             properties:
@@ -242,10 +308,6 @@ spec:
                 x-kubernetes-list-map-keys:
                 - type
                 x-kubernetes-list-type: map
-              currentVersion:
-                type: string
-              updateVersion:
-                type: string
             type: object
         type: object
     served: true
@@ -285,26 +347,57 @@ spec:
             type: object
           spec:
             properties:
-              clusterId:
-                type: string
+              darktraceConfig:
+                properties:
+                  activeAiSecurityPortalUrl:
+                    default: https://activeai.darktrace.com
+                    pattern: ^https:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?(\/.*)?$
+                    type: string
+                  clientId:
+                    pattern: ^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}$
+                    type: string
+                  clientSecretRef:
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        default: ""
+                        type: string
+                      optional:
+                        type: boolean
+                    required:
+                    - key
+                    type: object
+                    x-kubernetes-map-type: atomic
+                  clusterId:
+                    type: string
+                  products:
+                    additionalProperties:
+                      properties:
+                        name:
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: object
+                    x-kubernetes-validations:
+                    - message: key must be one of /CLOUD, /NETWORK
+                      rule: self.all(k, k in ['/CLOUD','/NETWORK'])
+                required:
+                - activeAiSecurityPortalUrl
+                - clientId
+                - clientSecretRef
+                - clusterId
+                type: object
               disableTls:
                 default: true
                 type: boolean
               imageTag:
                 minLength: 1
                 type: string
-              serverHost:
-                type: string
-              setupKey:
-                type: string
-              setupKeyId:
-                type: string
             required:
-            - clusterId
+            - darktraceConfig
             - disableTls
-            - serverHost
-            - setupKey
-            - setupKeyId
             type: object
           status:
             properties:
@@ -386,50 +479,44 @@ spec:
             type: object
           spec:
             properties:
-              auth:
-                properties:
-                  activeAiSecurityPortalUrl:
-                    default: https://activeai.darktrace.com
-                    pattern: ^https:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?(\/.*)?$
-                    type: string
-                  clientId:
-                    pattern: ^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}$
-                    type: string
-                  clientSecret:
-                    minLength: 1
-                    type: string
-                  products:
-                    additionalProperties:
-                      properties:
-                        name:
-                          type: string
-                      required:
-                      - name
-                      type: object
-                    type: object
-                    x-kubernetes-validations:
-                    - message: key must be one of /CLOUD, /CLOUD/K8S, /NETWORK, /ENDPOINT
-                      rule: self.all(k, k in ['/CLOUD','/CLOUD/K8S','/NETWORK','/ENDPOINT'])
-                required:
-                - activeAiSecurityPortalUrl
-                - clientId
-                - clientSecret
-                type: object
               autoUpdate:
                 default: true
                 type: boolean
-              clusterId:
+              autoUpdateFrequency:
+                default: 1h
                 type: string
               components:
                 properties:
                   serverSpec:
                     properties:
-                      awsAccessKeyId:
-                        type: string
+                      awsAccessKeyIdRef:
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            default: ""
+                            type: string
+                          optional:
+                            type: boolean
+                        required:
+                        - key
+                        type: object
+                        x-kubernetes-map-type: atomic
                       awsEndpoint:
                         type: string
-                      awsSecretAccessKey:
-                        type: string
+                      awsSecretAccessKeyRef:
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            default: ""
+                            type: string
+                          optional:
+                            type: boolean
+                        required:
+                        - key
+                        type: object
+                        x-kubernetes-map-type: atomic
                       azureStorageAccount:
                         type: string
                       azureStorageContainer:
@@ -448,9 +535,8 @@ spec:
                     type: object
                     x-kubernetes-validations:
                     - message: Specify either AWS or Azure settings, not both.
-                      rule: '!(((has(self.s3Bucket) && self.s3Bucket != "") || (has(self.awsAccessKeyId)
-                        && self.awsAccessKeyId != "") || (has(self.awsSecretAccessKey)
-                        && self.awsSecretAccessKey != "") || (has(self.awsEndpoint)
+                      rule: '!(((has(self.s3Bucket) && self.s3Bucket != "") || has(self.awsAccessKeyIdRef)
+                        || has(self.awsSecretAccessKeyRef) || (has(self.awsEndpoint)
                         && self.awsEndpoint != "") || (has(self.s3StoragePath) &&
                         self.s3StoragePath != "")) && ((has(self.azureStorageAccount)
                         && self.azureStorageAccount != "") || (has(self.azureStorageContainer)
@@ -463,12 +549,53 @@ spec:
                         != "") && (has(self.azureStorageContainer) && self.azureStorageContainer
                         != ""))))'
                 type: object
+              darktraceConfig:
+                properties:
+                  activeAiSecurityPortalUrl:
+                    default: https://activeai.darktrace.com
+                    pattern: ^https:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?(\/.*)?$
+                    type: string
+                  clientId:
+                    pattern: ^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}$
+                    type: string
+                  clientSecretRef:
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        default: ""
+                        type: string
+                      optional:
+                        type: boolean
+                    required:
+                    - key
+                    type: object
+                    x-kubernetes-map-type: atomic
+                  clusterId:
+                    type: string
+                  products:
+                    additionalProperties:
+                      properties:
+                        name:
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: object
+                    x-kubernetes-validations:
+                    - message: key must be one of /CLOUD, /NETWORK
+                      rule: self.all(k, k in ['/CLOUD','/NETWORK'])
+                required:
+                - activeAiSecurityPortalUrl
+                - clientId
+                - clientSecretRef
+                - clusterId
+                type: object
               proxy:
                 type: string
             required:
-            - auth
             - autoUpdate
-            - clusterId
+            - darktraceConfig
             type: object
           status:
             properties:
@@ -550,44 +677,107 @@ spec:
             type: object
           spec:
             properties:
-              awsAccessKeyId:
-                type: string
+              awsAccessKeyIdRef:
+                properties:
+                  key:
+                    type: string
+                  name:
+                    default: ""
+                    type: string
+                  optional:
+                    type: boolean
+                required:
+                - key
+                type: object
+                x-kubernetes-map-type: atomic
               awsEndpoint:
                 type: string
-              awsSecretAccessKey:
-                type: string
+              awsSecretAccessKeyRef:
+                properties:
+                  key:
+                    type: string
+                  name:
+                    default: ""
+                    type: string
+                  optional:
+                    type: boolean
+                required:
+                - key
+                type: object
+                x-kubernetes-map-type: atomic
               azureStorageAccount:
                 type: string
               azureStorageContainer:
                 type: string
-              clusterId:
-                type: string
+              darktraceConfig:
+                properties:
+                  activeAiSecurityPortalUrl:
+                    default: https://activeai.darktrace.com
+                    pattern: ^https:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?(\/.*)?$
+                    type: string
+                  clientId:
+                    pattern: ^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}$
+                    type: string
+                  clientSecretRef:
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        default: ""
+                        type: string
+                      optional:
+                        type: boolean
+                    required:
+                    - key
+                    type: object
+                    x-kubernetes-map-type: atomic
+                  clusterId:
+                    type: string
+                  products:
+                    additionalProperties:
+                      properties:
+                        name:
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: object
+                    x-kubernetes-validations:
+                    - message: key must be one of /CLOUD, /NETWORK
+                      rule: self.all(k, k in ['/CLOUD','/NETWORK'])
+                required:
+                - activeAiSecurityPortalUrl
+                - clientId
+                - clientSecretRef
+                - clusterId
+                type: object
               dpiImageTag:
                 type: string
               dpiProxyImageTag:
                 type: string
-              gatewayId:
-                type: string
-              gatewayToken:
-                type: string
               hekaImageTag:
                 type: string
-              hmacOsSensor:
-                type: string
+              hmacTokenRef:
+                properties:
+                  key:
+                    type: string
+                  name:
+                    default: ""
+                    type: string
+                  optional:
+                    type: boolean
+                required:
+                - key
+                type: object
+                x-kubernetes-map-type: atomic
               l3lbImageTag:
-                type: string
-              master:
                 type: string
               nginxImageTag:
                 type: string
               pcapEnabled:
                 default: false
                 type: boolean
-              probeId:
-                type: string
               proxy:
-                type: string
-              pushToken:
                 type: string
               redisImageTag:
                 type: string
@@ -599,36 +789,21 @@ spec:
                 type: string
               sabreServerImageTag:
                 type: string
-              sabreToken:
-                type: string
-              sensorUrl:
-                pattern: ^https:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?(\/.*)?$
-                type: string
               vanguardImageTag:
                 type: string
               verifyCertificate:
                 default: true
                 type: boolean
             required:
-            - clusterId
-            - gatewayId
-            - gatewayToken
-            - hmacOsSensor
-            - master
+            - darktraceConfig
+            - hmacTokenRef
             - pcapEnabled
-            - probeId
-            - pushToken
-            - sabreToken
-            - sensorUrl
             - verifyCertificate
             type: object
             x-kubernetes-validations:
-            - message: pushToken must be '<probeGroup>:<rest>', e.g. 'pg-01:abc123'
-              rule: (size(self.pushToken) > 0 && self.pushToken.matches('^.+:.+$'))
             - message: Specify either AWS or Azure settings, not both.
-              rule: '!(((has(self.s3Bucket) && self.s3Bucket != "") || (has(self.awsAccessKeyId)
-                && self.awsAccessKeyId != "") || (has(self.awsSecretAccessKey) &&
-                self.awsSecretAccessKey != "") || (has(self.awsEndpoint) && self.awsEndpoint
+              rule: '!(((has(self.s3Bucket) && self.s3Bucket != "") || has(self.awsAccessKeyIdRef)
+                || has(self.awsSecretAccessKeyRef) || (has(self.awsEndpoint) && self.awsEndpoint
                 != "") || (has(self.s3StoragePath) && self.s3StoragePath != "")) &&
                 ((has(self.azureStorageAccount) && self.azureStorageAccount != "")
                 || (has(self.azureStorageContainer) && self.azureStorageContainer
