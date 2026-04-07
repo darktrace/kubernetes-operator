@@ -777,6 +777,8 @@ spec:
               pcapEnabled:
                 default: false
                 type: boolean
+              prometheusImageTag:
+                type: string
               proxy:
                 type: string
               redisImageTag:
