@@ -2,7 +2,7 @@
 
 **Release date: 07-04-2026**
 
-- Use secret refs in CRD specs
+- Refer to secrets in Custom Resources by Secret Ref
 - Prometheus server deployed for monitoring DtK8sSensorServer
 - Improved error recovery
 - Simplified configuration for selecting sub-master in a unified view setup
