@@ -1,0 +1,26 @@
+apiVersion: app.darktrace.com/v1alpha1
+kind: DtK8sSensor
+metadata:
+  labels:
+    app.kubernetes.io/name: dt-k8ssensor
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/component: operator
+    control-plane: controller-manager
+  name: dt-k8ssensor
+  namespace: {{ .Namespace }}
+spec:
+  darktraceConfig:
+    clusterId: {{ .ClusterId | quote }}
+    activeAiSecurityPortalUrl: {{ .ActiveAiSecurityPortalUrl | quote }}
+    clientId: {{ .ClientId | quote }}
+    clientSecretRef:
+      name: dt-k8ssensor-auth
+      key: clientSecret
+{{- if .Products }}
+    products:
+  {{- range $type, $name := .Products }}
+      {{ $type | quote }}:
+        name: {{ $name | quote }}
+  {{- end }}
+{{- end }}
+  autoUpdate: {{ .AutoUpdate }}

@@ -1,3 +1,10 @@
+## 7.1.3
+
+**Release date: 09-04-2026**
+
+- Template DtK8sSensor release artifact
+
+
 ## 7.1.2
 
 **Release date: 07-04-2026**
