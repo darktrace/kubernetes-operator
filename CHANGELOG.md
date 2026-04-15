@@ -1,3 +1,11 @@
+## 7.1.4
+
+**Release date: 15-04-2026**
+
+- Bug fixes
+
+
+
 ## 7.1.3
 
 **Release date: 09-04-2026**
