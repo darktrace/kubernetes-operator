@@ -1,3 +1,10 @@
+## 7.1.6
+
+**Release date: 25-06-2026**
+
+- Bug fixes
+
+
 ## 7.1.5
 
 **Release date: 23-06-2026**
