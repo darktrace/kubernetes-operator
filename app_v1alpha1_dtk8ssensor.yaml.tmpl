@@ -24,3 +24,8 @@ spec:
   {{- end }}
 {{- end }}
   autoUpdate: {{ .AutoUpdate }}
+{{- if .EnableFAI }}
+  components:
+    fai:
+      enabled: true
+{{- end }}
