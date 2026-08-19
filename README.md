@@ -32,6 +32,7 @@ The installation process creates:
 
 1. Download the latest `dt-k8ssensor-operator.yaml` from the [releases page](releases)
 2. Deploy the operator:
+
    ```bash
    NAMESPACE=<target-namespace> IMAGE=dt-k8ssensor:latest envsubst < dt-k8ssensor-operator.yaml | kubectl apply -f -
    ```
@@ -56,6 +57,11 @@ kubectl logs -l app=dt-k8ssensor -n <namespace>
 After successful operator installation, configure and deploy sensors through the Darktrace /CLOUD management console to begin protecting your Kubernetes environment.
 
 For detailed configuration instructions, refer to the Darktrace Customer Portal.
+
+## Upgrading
+
+For instructions on upgrading to a newer version of the operator, including
+version-specific notes on breaking changes, see the [Upgrade Guide](UPGRADE.md).
 
 ## Uninstalling
 
