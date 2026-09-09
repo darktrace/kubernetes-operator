@@ -60,6 +60,8 @@ These steps apply to **every** upgrade regardless of version.
 
 ### Performing the upgrade
 
+#### Using YAML manifests
+
 Apply the target version's manifest directly from the repository:
 
 ```bash
@@ -67,6 +69,26 @@ kubectl apply --server-side -f https://raw.githubusercontent.com/darktrace/kuber
 ```
 
 This updates CRDs, RBAC, and the operator deployment in a single step.
+
+#### Using Helm
+
+Upgrade the chart to the target version:
+
+```bash
+helm upgrade dt-k8ssensor-operator oci://public.ecr.aws/darktrace/k8ssensor-operator-chart \
+  --version <version> \
+  --namespace darktrace
+```
+
+This updates CRDs, RBAC, and the operator deployment. The DtK8sSensor CR is
+not affected — the operator handles any reconciliation of managed components
+after the upgrade.
+
+Upgrading CRDs may introduce new validation rules or required fields that
+affect existing custom resources. Review the [version notes](#version-notes)
+for any CRD-related changes before upgrading. For more detail on how Helm
+handles CRD lifecycle, see the
+[Helm documentation on CRD limitations](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/#some-caveats-and-explanations).
 
 ### After you upgrade
 
@@ -94,11 +116,73 @@ This updates CRDs, RBAC, and the operator deployment in a single step.
 
 ### Rollback
 
+#### Using YAML manifests
+
 To re-apply the previous version's manifest:
 
 ```bash
 kubectl apply --server-side -f https://raw.githubusercontent.com/darktrace/kubernetes-operator/<previous-version>/dt-k8ssensor-operator.yaml
 ```
+
+#### Using Helm
+
+```bash
+helm rollback dt-k8ssensor-operator <revision> --namespace darktrace
+```
+
+To find the previous revision number:
+
+```bash
+helm history dt-k8ssensor-operator --namespace darktrace
+```
+
+---
+
+## Migrating from YAML manifests to Helm
+
+If you have an existing installation deployed via `kubectl apply` and want to
+switch to Helm-managed upgrades, follow these steps:
+
+1. Annotate and label the CRDs so Helm can adopt them. CRDs must be preserved
+   to retain existing DtK8sSensor resources and all managed sub-resources:
+
+   ```bash
+   RELEASE_NAME=dt-k8ssensor-operator
+   NAMESPACE=darktrace
+
+   for CRD in $(kubectl get crds --no-headers -o custom-columns=NAME:.metadata.name | grep darktrace.com); do
+       kubectl annotate crd "$CRD" meta.helm.sh/release-name="$RELEASE_NAME" --overwrite
+       kubectl annotate crd "$CRD" meta.helm.sh/release-namespace="$NAMESPACE" --overwrite
+       kubectl label crd "$CRD" app.kubernetes.io/managed-by=Helm --overwrite
+   done
+   ```
+
+2. Delete the existing operator resources (not the CRDs or DtK8sSensor CRs):
+
+   ```bash
+   kubectl delete -n darktrace deployment,serviceaccount,role,rolebinding,service -l app.kubernetes.io/part-of=dt-k8ssensor
+   kubectl delete clusterrole,clusterrolebinding -l app.kubernetes.io/part-of=dt-k8ssensor
+   ```
+
+3. Install the operator via Helm. Helm will adopt the annotated CRDs and
+   create fresh copies of all other resources:
+
+   ```bash
+   helm install dt-k8ssensor-operator oci://public.ecr.aws/darktrace/k8ssensor-operator-chart \
+     --version <version> \
+     --namespace darktrace
+   ```
+
+4. Verify the operator is running and managed resources are healthy:
+
+   ```bash
+   kubectl get pods -n darktrace
+   kubectl get dtk8ssensor dt-k8ssensor -o jsonpath='{.status.conditions}'
+   ```
+
+The DtK8sSensor CR and all managed sub-resources (server, agents) continue
+running throughout this process. The new operator pod will reconcile them on
+startup.
 
 ---
 

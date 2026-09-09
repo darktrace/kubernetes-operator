@@ -28,14 +28,41 @@ The installation process creates:
 - Operator deployment with appropriate RBAC permissions
 - [Custom Resource Definitions (CRDs)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) for `DtK8sSensor`, `DtK8sSensorServer`, `DtK8sSensorAuditAgent`, and `DtK8sSensorClusterAnalyzer`
 
-**Installation Steps:**
+#### Option 1: Using YAML manifests
 
 1. Download the latest `dt-k8ssensor-operator.yaml` from the [releases page](releases)
 2. Deploy the operator:
 
    ```bash
-   NAMESPACE=<target-namespace> IMAGE=dt-k8ssensor:latest envsubst < dt-k8ssensor-operator.yaml | kubectl apply -f -
+   kubectl apply --server-side -f dt-k8ssensor-operator.yaml
    ```
+
+#### Option 2: Using Helm
+
+```bash
+helm install dt-k8ssensor-operator oci://public.ecr.aws/darktrace/k8ssensor-operator-chart \
+  --version <version> \
+  --namespace darktrace \
+  --create-namespace
+```
+
+The chart is also available from Docker Hub (`oci://registry-1.docker.io/darktrace/k8ssensor-operator-chart`).
+Public ECR is recommended as it has higher rate limits.
+
+### Configuring the sensor
+
+After the operator is installed, create the auth secret and deploy a DtK8sSensor
+custom resource to begin monitoring:
+
+```bash
+kubectl create secret generic dt-k8ssensor-auth \
+  --namespace darktrace \
+  --from-literal=clientSecret=<your-client-secret>
+```
+
+Then apply a DtK8sSensor custom resource configured with your Darktrace
+credentials. Refer to the Darktrace Customer Portal for detailed configuration
+instructions.
 
 ### Verification
 
@@ -65,11 +92,26 @@ version-specific notes on breaking changes, see the [Upgrade Guide](UPGRADE.md).
 
 ## Uninstalling
 
-Uninstall all Darktrace Kubernetes resources from a cluster:
+### Using Helm
+
+Delete all DtK8sSensor custom resources first to allow finalizer cleanup,
+then uninstall the chart:
+
+```bash
+kubectl delete dtk8ssensors --all --timeout=120s --ignore-not-found
+helm uninstall dt-k8ssensor-operator -n darktrace
+```
+
+CRDs are retained by default after uninstall. To fully remove them:
+
+```bash
+kubectl delete crd -l app.kubernetes.io/part-of=dt-k8ssensor
+```
+
+### Using YAML manifests
 
 ```bash
 kubectl delete dtk8ssensor --all --wait=true --ignore-not-found
-kubectl delete crd -l app.kubernetes.io/name=dt-k8ssensor
-kubectl delete all --all-namespaces -l app.kubernetes.io/name=dt-k8ssensor
-kubectl delete crd,clusterrole,clusterrolebinding,role,serviceaccount,rolebinding --all-namespaces -l app.kubernetes.io/name=dt-k8ssensor
+kubectl delete -f dt-k8ssensor-operator.yaml
+kubectl delete crd -l app.kubernetes.io/part-of=dt-k8ssensor
 ```
